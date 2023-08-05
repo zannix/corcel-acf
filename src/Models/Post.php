@@ -10,13 +10,20 @@ class Post extends BaseField
     use Traits\SerializedSometimes;
 
     /**
-     * If "multiple" is checked, internal value is serialized
+     * Check if internal value is serialized
      *
      * @return bool
      */
     public function getIsSerializedAttribute() : bool
     {
-        return !empty(Arr::get($this->config, 'multiple'));
+        $value = $this->data->get($this->localKey);
+
+        try {
+            unserialize($value);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
